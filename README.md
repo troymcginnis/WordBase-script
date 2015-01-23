@@ -1,6 +1,6 @@
 # WordBase Installation Script
 
-Scripts I use to get me up and running with a WordPress install ASAP. It's a bit messy and definitely not refined but it does what I want it to do right now and gets me up and running quickly.
+Scripts I use to get me up and running with a new, local development WordPress install ASAP. It's a bit messy and definitely not refined but it does what I want it to do right now and gets me up and running quickly.
 
 What it gets me...
 - brand new, up-to-date WordPress install
