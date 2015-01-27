@@ -163,6 +163,10 @@ do
     esac
 done
 
+shift $(($OPTIND - 1))
+
+PROJECT=$1
+DB_NAME=$(echo $PROJECT | tr - _)
 ROOTS=${ROOTS:-false}
 DEBUG=${DEBUG:-false}
 
