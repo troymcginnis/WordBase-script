@@ -59,14 +59,14 @@ create_database()
     fi
 }
 
-root_theme ()
+sage_theme ()
 {
-    printf "Installing Roots Theme...\n"
+    printf "Installing Sage Theme...\n"
 
     THEME_DIR=wp-content/themes/
-    ROOT_DIR="/tmp/roots-tmp/"
+    ROOT_DIR="/tmp/sage-tmp/"
     FILE="master.zip"
-    EXTRACTED_DIR="roots-master"
+    EXTRACTED_DIR="sage-master"
 
     if [ ! -d $THEME_DIR ]
         then
@@ -101,6 +101,42 @@ root_theme ()
     fi
 
     mv $EXTRACTED_DIR $PROJECT
+
+    # Do some Sage specific stuff
+    cd $PROJECT
+
+    printf "Installing bower requirements...\n"
+    if $DEBUG
+        then
+            bower install
+        else
+            bower install &> /dev/null
+    fi
+
+    printf "Installing npm requirements...\n"
+    if $DEBUG
+        then
+            npm install
+        else
+            npm install &> /dev/null
+    fi
+
+    printf "Double checking...\n"
+    if $DEBUG
+        then
+            npm install
+        else
+            npm install &> /dev/null
+    fi
+
+    printf "Compile da files...\n"
+    if $DEBUG
+        then
+            gulp
+        else
+            gulp &> /dev/null
+    fi
+
 }
 
 # Create Bit Bucket repo and init
@@ -131,35 +167,38 @@ source ~/.bash_profile
 PROJECT=$2
 DB_NAME=$(echo $PROJECT | tr - _)
 
-while getopts "crdbwtv" arg
+while getopts "scrdbwtv" arg
 do
     case $arg in
         r)
-            ROOTS=true
-	    ;;
-	v)
-	    DEBUG=true
-	    ;;
-	d)
-	    create_database
-	    exit
-	    ;;
-	b)
-	    create_bitbucket
-	    exit
-	    ;;
-	w)
-	    install_wp
-	    exit
-	    ;;
-	c)
-	    wp_config
-	    exit
-	    ;;
-	t)
-	    root_theme
-	    exit
-	    ;;
+            SAGE=true
+           ;;
+        s)
+            SAGE=true
+	       ;;
+    	v)
+    	    DEBUG=true
+    	    ;;
+    	d)
+    	    create_database
+    	    exit
+    	    ;;
+    	b)
+    	    create_bitbucket
+    	    exit
+    	    ;;
+    	w)
+    	    install_wp
+    	    exit
+    	    ;;
+    	c)
+    	    wp_config
+    	    exit
+    	    ;;
+    	t)
+    	    sage_theme
+    	    exit
+    	    ;;
     esac
 done
 
@@ -167,7 +206,7 @@ shift $(($OPTIND - 1))
 
 PROJECT=$1
 DB_NAME=$(echo $PROJECT | tr - _)
-ROOTS=${ROOTS:-false}
+SAGE=${SAGE:-false}
 DEBUG=${DEBUG:-false}
 
 # Check for project name
@@ -193,7 +232,7 @@ wp_config
 create_database
 
 # Install Roots Theme
-if $ROOTS
+if $SAGE
     then
-	root_theme
+	sage_theme
 fi
