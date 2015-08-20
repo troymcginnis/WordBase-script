@@ -143,17 +143,6 @@ sage_theme ()
     perl -pi -e "s/example.dev/localhost:8888/g" /assets/manifest.json
 }
 
-activate_sage ()
-{
-    printf "Activating Sage Theme...\n"
-
-    cd "${WP_ROOT_DIR}/wp-content/"
-    mkdir mu-pluins
-
-    cd mu-pluins
-    wget https://raw.githubusercontent.com/roots/wp-cli-theme-activation/master/theme-activation-command.php
-}
-
 # Create Bit Bucket repo and init
 create_bitbucket ()
 {
@@ -215,10 +204,6 @@ do
     	    sage_theme
     	    exit
     	    ;;
-        a)
-            activate_sage
-            exit
-            ;;
     esac
 done
 
@@ -256,5 +241,4 @@ create_database
 if $SAGE
     then
 	sage_theme
-    activate_sage
 fi
