@@ -2,15 +2,13 @@
 
 # Script to automate the setup of a new WP project
 # Author: Troy McGinnis
-# Updated: January 21, 2015
+# Updated: August 19, 2015
 # URL: troymcginnis.com
 # Usage: init_wp.sh [-crdbwtv] project-name
 
-# TODO: Automate setting up Roots Theme:
-#           - change Roots title
-#           - activate Roots
-#           - npm install
-#           - grunt build
+# TODO: Automate setting up Sage Theme:
+#           - change Sage title
+#           - activate Sage
 
 install_wp ()
 {
@@ -105,6 +103,7 @@ sage_theme ()
     # Do some Sage specific stuff
     cd $PROJECT
 
+    # Install Bower requirements
     printf "Installing bower requirements...\n"
     if $DEBUG
         then
@@ -113,6 +112,7 @@ sage_theme ()
             bower install &> /dev/null
     fi
 
+    # Install npm requirements
     printf "Installing npm requirements...\n"
     if $DEBUG
         then
@@ -121,6 +121,7 @@ sage_theme ()
             npm install &> /dev/null
     fi
 
+    # Try installing npm again incase it failed
     printf "Double checking...\n"
     if $DEBUG
         then
@@ -129,6 +130,7 @@ sage_theme ()
             npm install &> /dev/null
     fi
 
+    # Compile all the gulp files
     printf "Compile da files...\n"
     if $DEBUG
         then
@@ -137,6 +139,9 @@ sage_theme ()
             gulp &> /dev/null
     fi
 
+    # Change the manifest for BrowserSync (change this to what you use in your dev environment)
+    printf "Changing the manifest.json...\n"
+    perl -pi -e "s/example.dev/localhost:8888/g" "${PROJECT}/assets/manifest.json"
 }
 
 # Create Bit Bucket repo and init
