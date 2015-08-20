@@ -4,7 +4,7 @@
 # Author: Troy McGinnis
 # Updated: August 19, 2015
 # URL: troymcginnis.com
-# Usage: init_wp.sh [-crdbwtv] project-name
+# Usage: wp_init.sh [-scrdbwtva] project-name
 
 # TODO: Automate setting up Sage Theme:
 #           - change Sage title
@@ -62,7 +62,6 @@ sage_theme ()
     printf "Installing Sage Theme...\n"
 
     THEME_DIR=wp-content/themes/
-    ROOT_DIR="/tmp/sage-tmp/"
     FILE="master.zip"
     EXTRACTED_DIR="sage-master"
 
@@ -76,16 +75,16 @@ sage_theme ()
 
     if $DEBUG
         then
-            wget -P $ROOT_DIR https://github.com/roots/roots/archive/$FILE
+            wget -P $TEMP_DIR https://github.com/roots/sage/archive/$FILE
         else
-            wget -P $ROOT_DIR https://github.com/roots/roots/archive/$FILE &> /dev/null
+            wget -P $TEMP_DIR https://github.com/roots/sage/archive/$FILE &> /dev/null
     fi
     if [ $? -ne 0 ]
         then
            echo "ERROR: wget Failed!"
            exit
     fi
-    if [ ! -f ${ROOT_DIR}${FILE} ]
+    if [ ! -f ${TEMP_DIR}${FILE} ]
         then
         echo "ERROR: wget Failed! No file found."
         exit
@@ -93,9 +92,9 @@ sage_theme ()
 
     if $DEBUG
         then
-            unzip ${ROOT_DIR}${FILE}
+            unzip ${TEMP_DIR}${FILE}
         else
-            unzip ${ROOT_DIR}${FILE} &> /dev/null
+            unzip ${TEMP_DIR}${FILE} &> /dev/null
     fi
 
     mv $EXTRACTED_DIR $PROJECT
@@ -141,7 +140,18 @@ sage_theme ()
 
     # Change the manifest for BrowserSync (change this to what you use in your dev environment)
     printf "Changing the manifest.json...\n"
-    perl -pi -e "s/example.dev/localhost:8888/g" "${PROJECT}/assets/manifest.json"
+    perl -pi -e "s/example.dev/localhost:8888/g" /assets/manifest.json
+}
+
+activate_sage ()
+{
+    printf "Activating Sage Theme...\n"
+
+    cd "${WP_ROOT_DIR}/wp-content/"
+    mkdir mu-pluins
+
+    cd mu-pluins
+    wget https://raw.githubusercontent.com/roots/wp-cli-theme-activation/master/theme-activation-command.php
 }
 
 # Create Bit Bucket repo and init
@@ -170,9 +180,10 @@ create_bitbucket ()
 source ~/.bash_profile
 
 PROJECT=$2
+WP_ROOT_DIR=$(pwd)/${PROJECT}
 DB_NAME=$(echo $PROJECT | tr - _)
 
-while getopts "scrdbwtv" arg
+while getopts "scrdbwtva" arg
 do
     case $arg in
         r)
@@ -204,6 +215,10 @@ do
     	    sage_theme
     	    exit
     	    ;;
+        a)
+            activate_sage
+            exit
+            ;;
     esac
 done
 
@@ -213,6 +228,7 @@ PROJECT=$1
 DB_NAME=$(echo $PROJECT | tr - _)
 SAGE=${SAGE:-false}
 DEBUG=${DEBUG:-false}
+TEMP_DIR="/tmp/sage-tmp/"
 
 # Check for project name
 if [ -z $PROJECT ]
@@ -240,4 +256,5 @@ create_database
 if $SAGE
     then
 	sage_theme
+    activate_sage
 fi
