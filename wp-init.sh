@@ -2,9 +2,9 @@
 
 # Script to automate the setup of a new WP project
 # Author: Troy McGinnis
-# Updated: August 19, 2015
+# Updated: August 21, 2015
 # URL: troymcginnis.com
-# Usage: wp_init.sh [-scrdbwtva] project-name
+# Usage: wp_init.sh [-scrdbwtvo] project-name
 
 # TODO: Automate setting up Sage Theme:
 #           - change Sage title

@@ -3,10 +3,13 @@
 Scripts I use to get me up and running with a new, local development WordPress install ASAP. It's a bit messy and definitely not refined but it does what I want it to do right now and gets me up and running quickly.
 
 What it gets me...
-- brand new, up-to-date WordPress install
-- starter theme ([Roots.io](roots.io))
+- new WordPress install
+- new starter theme ([Roots.io Sage](roots.io/sage/))
+- new theme clean-up extension ([Roots.io Soil](roots.io/plugins/soil/))
 - configured `wp_config.php`
 - configured database
+- downloaded requirements
+- compiled assets
 - BitBucket repository
 
 # Getting Started
@@ -60,8 +63,10 @@ To create the database. Or you can just run that to create databases. Woohoo.
 
 ## 3. Options
 
+o
+
 These run alongside the entire install script...
-- `-r` - install Roots theme with install
+- `-s` - install Sage theme with install (or `-r`)
 - `-v` - verbosity
 
 If you want to run any part of that script independantly there are flags to run each part by itself...
@@ -69,12 +74,11 @@ If you want to run any part of that script independantly there are flags to run 
 - `-b` - create the BitBucket repo
 - `-w` - install WordPress
 - `-c` - configure `wp-config.php`
-- `-t` - install the Roots theme
+- `-t` - install the Sage theme
+- `-o` - install Soil extension
 
 # TODO
 
-- Automate setting up Roots Theme:
-	- change Roots title
-	- activate Roots
-	- npm install
-	- grunt build
+- Automate setting up Sage Theme:
+	- change Sage title
+	- activate Sage
