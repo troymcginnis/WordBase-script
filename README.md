@@ -63,8 +63,6 @@ To create the database. Or you can just run that to create databases. Woohoo.
 
 ## 3. Options
 
-o
-
 These run alongside the entire install script...
 - `-s` - install Sage theme with install (or `-r`)
 - `-v` - verbosity
