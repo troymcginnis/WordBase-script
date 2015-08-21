@@ -141,6 +141,36 @@ sage_theme ()
     # Change the manifest for BrowserSync (change this to what you use in your dev environment)
     printf "Changing the manifest.json...\n"
     perl -pi -e "s/example.dev/localhost:8888/g" /assets/manifest.json
+
+    clear_tmp
+}
+
+soil ()
+{
+    FILE="master.zip"
+
+    if $DEBUG
+        then
+            wget -P $TEMP_DIR https://github.com/roots/soil/archive/$FILE
+        else
+            wget -P $TEMP_DIR https://github.com/roots/soil/archive/$FILE &> /dev/null
+    fi
+
+    cd ${WP_ROOT_DIR}/wp-content/plugins
+
+    if $DEBUG
+        then
+            unzip ${TEMP_DIR}${FILE}
+        else
+            unzip ${TEMP_DIR}${FILE} &> /dev/null
+    fi
+
+    clear_tmp
+}
+
+clear_tmp ()
+{
+    rm -rf ${TEMP_DIR}/*
 }
 
 # Create Bit Bucket repo and init
@@ -171,8 +201,9 @@ source ~/.bash_profile
 PROJECT=$2
 WP_ROOT_DIR=$(pwd)/${PROJECT}
 DB_NAME=$(echo $PROJECT | tr - _)
+TEMP_DIR="/tmp/sage-tmp/"
 
-while getopts "scrdbwtva" arg
+while getopts "scrdbwtvo" arg
 do
     case $arg in
         r)
@@ -204,6 +235,10 @@ do
     	    sage_theme
     	    exit
     	    ;;
+        o)
+            soil
+            exit
+            ;;
     esac
 done
 
@@ -213,7 +248,6 @@ PROJECT=$1
 DB_NAME=$(echo $PROJECT | tr - _)
 SAGE=${SAGE:-false}
 DEBUG=${DEBUG:-false}
-TEMP_DIR="/tmp/sage-tmp/"
 
 # Check for project name
 if [ -z $PROJECT ]
@@ -241,4 +275,5 @@ create_database
 if $SAGE
     then
 	sage_theme
+    soil
 fi
