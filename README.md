@@ -51,6 +51,12 @@ Or, if you want the Roots theme....
 wp_init -r project-name
 ```
 
+And, with optional human readable name (defaults to project-name) - currently only used to set Theme title
+
+```
+wp_init -r project-name human-readable-name
+```
+
 That's it.
 
 If your database fails to create - if you forgot to start your MySQL instance or created a database with an existing name or something - you can run...
@@ -60,6 +66,8 @@ wp_init -d database-name
 ```
 
 To create the database. Or you can just run that to create databases. Woohoo.
+
+_NOTE: `database-name` is the `project-name` when run in the full script_
 
 ## 3. Options
 
@@ -74,6 +82,8 @@ If you want to run any part of that script independantly there are flags to run 
 - `-c` - configure `wp-config.php`
 - `-t` - install the Sage theme
 - `-o` - install Soil extension
+- `-i` - install Bower and npm requirements and compile assets
+- `-z` - make Sage theme customizations
 
 # TODO
 
