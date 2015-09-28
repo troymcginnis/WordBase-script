@@ -4,7 +4,7 @@
 # Author: Troy McGinnis
 # Updated: August 21, 2015
 # URL: troymcginnis.com
-# Usage: wp_init.sh [-scrdbwtvo] project-name
+# Usage: wp_init.sh [-scrdbwtvoiz] project-name
 
 # TODO: Automate setting up Sage Theme:
 #           - change Sage title
@@ -99,6 +99,18 @@ sage_theme ()
 
     mv $EXTRACTED_DIR $PROJECT
 
+    # Install and compile stuff
+    sage_install_compile
+
+    # Customizations
+    sage_customizations
+
+    # Clear
+    clear_tmp
+}
+
+sage_install_compile()
+{
     # Do some Sage specific stuff
     cd $PROJECT
 
@@ -137,12 +149,17 @@ sage_theme ()
         else
             gulp &> /dev/null
     fi
+}
+
+sage_customizations()
+{
+    # Change the manifest for BrowserSync (change this to what you use in your dev environment)
+    printf "Updating manifest.json...\n"
+    perl -pi -e "s/example.dev/localhost:8888/g" assets/manifest.json
 
     # Change the manifest for BrowserSync (change this to what you use in your dev environment)
-    printf "Changing the manifest.json...\n"
-    perl -pi -e "s/example.dev/localhost:8888/g" /assets/manifest.json
-
-    clear_tmp
+    printf "Updating style.css...\n"
+    perl -pi -e "s/Sage Starter Theme/[${PROJECT_HUMAN}]/g" style.css
 }
 
 soil ()
@@ -199,11 +216,12 @@ create_bitbucket ()
 source ~/.bash_profile
 
 PROJECT=$2
+PROJECT_HUMAN=$3
 WP_ROOT_DIR=$(pwd)/${PROJECT}
 DB_NAME=$(echo $PROJECT | tr - _)
 TEMP_DIR="/tmp/sage-tmp/"
 
-while getopts "scrdbwtvo" arg
+while getopts "scrdbwtvoiz" arg
 do
     case $arg in
         r)
@@ -239,12 +257,17 @@ do
             soil
             exit
             ;;
+        i)
+            sage_install_compile
+            exit
+            ;;
+        z)
+            sage_customizations
+            exit
+            ;;
     esac
 done
 
-shift $(($OPTIND - 1))
-
-PROJECT=$1
 DB_NAME=$(echo $PROJECT | tr - _)
 SAGE=${SAGE:-false}
 DEBUG=${DEBUG:-false}
@@ -256,8 +279,14 @@ if [ -z $PROJECT ]
         exit
 fi
 
+# Check for project human name
+if [ -z $PROJECT_HUMAN ]
+    then
+        PROJECT_HUMAN=$PROJECT
+fi
+
 # Feedback
-printf "\nCreating new WP project for $1:\n\n"
+printf "\nCreating new WP project for $PROJECT:\n\n"
 
 # Create Bit Bucket
 create_bitbucket
